@@ -2,17 +2,14 @@
 {%block content%}
     {%if isFound%}
         <h1>
-            Project Number - {{key}}
-        </h1>
-        {% for item in list %}
-
-            {% if item.id == key %}
-            
+            Project ID - {{key}}
+        </h1>            
                 <h2>Project Title : {{item.title}}</h2>
-                <p>Project Descripton : {{item.description}}</p>
-            {% endif %}
-
-        {% endfor %}
+                <p>Project Descripton : {{item.description}}</p>   
+                <p>Tags :: </p>
+                {% for tag in tags %}
+                    <p>{{tag}}</p>
+                {% endfor %}          
     {% else %}
         <h2>The Project You are Looking For Does Not Exist. Please Try With a Different Project-ID !! </h2>
     {%endif%}

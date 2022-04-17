@@ -8,7 +8,9 @@
 <ol>
     {% for item in list %}
         <li>Project Title : {{item.title}}</li>
-        <a href = " {% url 'project' item.id %} "><p>Take Me There</p></a>
+        <a href = " {% url 'project' item.id %} " style="text-decoration: none;"><p>Take Me There</p></a>
+        <a href = " {% url 'update-project' item.id %} " style="text-decoration: none;"><p>Edit</p></a>
+        <a href = " {% url 'delete-project' item.id %}" style="text-decoration: none;"><p style="color: brown;" >Delete</p></a>
     {% endfor %}
 </ol>
 
