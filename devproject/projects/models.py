@@ -1,3 +1,4 @@
+from email.policy import default
 from operator import truediv
 from turtle import title
 from django.db import models
@@ -10,6 +11,7 @@ class Project(models.Model):
     description = models.TextField(null = True, blank = True)
     demo_link = models.CharField(max_length = 2000, null = True, blank = True)
     source_link = models.CharField(max_length = 2000, null = True, blank = True)
+    featured_image = models.ImageField(null = True, blank = True,  default = 'default.jpg' )
     created = models.DateField(auto_now_add = True)
     id = models.UUIDField(default = uuid.uuid4, primary_key = True, unique = True, editable = False)
     tags = models.ManyToManyField('Tag', blank = True)

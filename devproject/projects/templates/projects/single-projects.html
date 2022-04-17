@@ -1,6 +1,7 @@
 {% extends 'main.html' %}
 {%block content%}
     {%if isFound%}
+        <img src="{{ item.featured_image.url }}" style="max-width: 100px; max-height: 100px;">
         <h1>
             Project ID - {{key}}
         </h1>            

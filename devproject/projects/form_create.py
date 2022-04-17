@@ -8,4 +8,4 @@ class CreateProject(ModelForm):
     class Meta:
         model = Project
         #fields = '__all__' # this creates all the fields of our model
-        fields = ['title', 'description', 'demo_link' , 'source_link', 'tags']
+        fields = ['title', 'description', 'featured_image', 'demo_link' , 'source_link', 'tags']

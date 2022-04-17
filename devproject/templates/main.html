@@ -1,10 +1,13 @@
+{% load static %}
+
 <html>
     <head>
         <!-- <title></title> -->
+        <link rel="stylesheet" type="text/css" href="{% static 'styles/main.css' %}">
     </head>
     <body>
         <h1>The main Template</h1>
-        {% include 'logo.html' %}
+        {% include 'navbar.html' %}
         {% block content %}
         {% endblock content %}
     </body>
