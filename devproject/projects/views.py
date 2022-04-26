@@ -9,16 +9,12 @@ from projects.models import Project
 # Create your views here.
 
 def projects(request):
-    msg = 'you are in projects page'
-    number = 19
     projects = Project.objects.all()
     context = {'list' : projects}
     # return HttpResponse('Here are the projects')
     return render(request, 'projects/projects.html', context)
 
 def project(request,pk):
-    msg = 'you are in single-project page'
-    number = 20
     isFound = False
     projectObj = Project.objects.get(id = pk)
     if(projectObj):
