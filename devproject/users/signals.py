@@ -12,7 +12,7 @@ def createProfile(sender, instance, created, **kwargs):
             user = user,
             username = user.username,
             email = user.email,
-            name = user.firstname
+            name = user.first_name
         )
 
 def deleteUser(sender, instance, **kwargs):
