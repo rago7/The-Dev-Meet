@@ -6,6 +6,7 @@ from .models import Profile
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from .forms import CustomUserCreationForm
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 def loginUser(request):
@@ -71,3 +72,9 @@ def profile(request, pk):
     projects = profile.project_set.all()
     context = {'profile' : profile, 'topSkills':topSkills, 'otherSkills':otherSkills, 'projects':projects}
     return render(request, 'users/user-profile.html', context)
+
+@login_required(login_url='login')
+def userAccount(request):
+    profile = request.user.profile
+    context = {'profile':profile}
+    return render(request, 'users/account.html', context)
