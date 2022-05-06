@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from .models import Profile
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm, ProfileEditForm
 from django.contrib.auth.decorators import login_required
 # Create your views here.
 
@@ -58,7 +58,7 @@ def registerUser(request):
             messages.success(request, 'Signup Successful !!')
 
             login(request, user)
-            return redirect('profiles')
+            return redirect('edit-profile')
         else:
             messages.error(request, 'An Error Occurred During Registration :(')
 
@@ -78,3 +78,15 @@ def userAccount(request):
     profile = request.user.profile
     context = {'profile':profile}
     return render(request, 'users/account.html', context)
+
+@login_required(login_url='login')
+def editProfile(request):
+    profile = request.user.profile
+    form = ProfileEditForm(instance=profile)
+    if request.method == 'POST':
+        form = ProfileEditForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            return redirect('account')
+    context = {'form':form}
+    return render(request, 'users/edit_profile.html', context)
