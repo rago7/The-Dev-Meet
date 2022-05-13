@@ -1,9 +1,10 @@
-from dataclasses import field
+from dataclasses import field, fields
+from pyexpat import model
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import ModelForm
 
-from users.models import Profile
+from users.models import Profile, Skill
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
@@ -54,3 +55,23 @@ class ProfileEditForm(ModelForm):
             else:
                 field.widget.attrs.update({'class' : 'input', 'placeholder' : ('Password' if name == 'password1' else 'Confirm Password')})
 
+class SkillForm(ModelForm):
+    class Meta:
+        model = Skill
+        fields = '__all__'
+        exclude = ['owner']
+
+    def __init__(self, *args, **kwargs) -> None:
+        # this function overrides the initial load of ADD Project Page. 
+        super(SkillForm, self).__init__(*args, **kwargs)
+
+        # By these lines we set the attributes of required Field in our form.
+        # self.fields['title'].widget.attrs.update({'class' : 'input', 'placeholder' : 'Add Title'})
+        # self.fields['description'].widget.attrs.update({'class' : 'input', 'placeholder' : 'Add Description About Your Project'})
+        # self.fields['title'].widget.attrs.update({'class' : 'input', 'placeholder' : 'Add Title'})
+        # self.fields['featured_image'].widget.attrs.update({'class' : 'input'})
+        # self.fields['demo_link'].widget.attrs.update({'class' : 'input', 'placeholder' : 'Paste Your Demo Link'})
+        # self.fields['source_link'].widget.attrs.update({'class' : 'input', 'placeholder' : 'Paste Your Source Link'})
+
+        for name, field in self.fields.items():
+            field.widget.attrs.update({'class' : 'input', 'placeholder' : 'Add ' + name})

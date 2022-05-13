@@ -1,11 +1,12 @@
+from msilib.schema import InstallUISequence
 from pickle import FALSE
 from django.contrib import messages
 from multiprocessing import context
 from django.shortcuts import render, redirect
-from .models import Profile
+from .models import Profile, Skill
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from .forms import CustomUserCreationForm, ProfileEditForm
+from .forms import CustomUserCreationForm, ProfileEditForm, SkillForm
 from django.contrib.auth.decorators import login_required
 # Create your views here.
 
@@ -90,3 +91,48 @@ def editProfile(request):
             return redirect('account')
     context = {'form':form}
     return render(request, 'users/edit_profile.html', context)
+
+@login_required(login_url='login')
+def createSkill(request):
+    profile = request.user.profile
+    form = SkillForm()
+    if request.method == 'POST':
+        form = SkillForm(request.POST)
+        if form.is_valid():
+            skill = form.save(commit=False)
+            skill.owner = profile
+            skill.save()
+            return redirect('account')
+    context = {'form':form}
+    return render(request, 'users/skill_form.html', context)
+
+
+@login_required(login_url='login')
+def updateSkill(request, pk):
+    profile = request.user.profile
+    skill = profile.skill_set.get(id=pk)
+    form = SkillForm(instance=skill)
+    if request.method == 'POST':
+        form = SkillForm(request.POST, instance=skill)
+        if form.is_valid():
+            skill.save()
+            messages.success(request, 'Skill Updated Successfully!!')
+            return redirect('account')
+    context = {'form':form}
+    return render(request, 'users/skill_form.html', context)
+
+
+@login_required(login_url='login')
+def deleteSkill(request, pk):
+    profile = request.user.profile
+    skill = profile.skill_set.get(id=pk)  
+
+    if request.method == 'POST':
+        #skill = SkillForm(request.POST, instance=skill)
+        skill = profile.skill_set.get(id=pk)
+        skill.delete()
+        messages.success(request, 'Deleted Successfully !!')
+        return redirect('account')
+
+    context = {'object':skill, 'back':'account', 'type':'Skill'}
+    return render(request, 'delete_template.html', context)
