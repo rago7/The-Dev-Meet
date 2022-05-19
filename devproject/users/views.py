@@ -1,14 +1,14 @@
-from msilib.schema import InstallUISequence
 from pickle import FALSE
 from django.db.models import Q
 from django.contrib import messages
-from multiprocessing import context
 from django.shortcuts import render, redirect
-from .models import Profile, Skill
+from .models import Profile
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from .forms import CustomUserCreationForm, ProfileEditForm, SkillForm
 from django.contrib.auth.decorators import login_required
+
+from .utils import searchProfile
 # Create your views here.
 
 def loginUser(request):
@@ -42,20 +42,7 @@ def logoutUser(request):
     return redirect('login')
 
 def profiles(request):
-    search_query = ''
-
-    if request.GET.get('search_query'):
-        search_query = request.GET.get('search_query')
-    
-    #profiles = Profile.objects.filter(Q(name__icontains=search_query) | Q(short_intro__icontains=search_query))
-    skills = Skill.objects.filter(
-        Q(name__icontains=search_query)
-    )
-    profiles = Profile.objects.distinct().filter(
-        Q(name__icontains=search_query) | 
-        Q(short_intro__icontains=search_query) |
-        Q(skill__in=skills)
-    )
+    profiles, search_query = searchProfile(request)
     context = {'profiles' : profiles, 'search_query':search_query}
     return render(request, 'users/profiles.html', context)
 

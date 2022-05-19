@@ -1,17 +1,18 @@
-from multiprocessing import context
+from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from projects.form_create import CreateProject
 from django.contrib.auth.decorators import login_required
 
 from projects.models import Project
+from projects.utils import searchProject
 
 
 # Create your views here.
 
 def projects(request):
-    projects = Project.objects.all()
-    context = {'list' : projects}
+    projects, search_query = searchProject(request)
+    context = {'list' : projects, 'search':search_query}
     # return HttpResponse('Here are the projects')
     return render(request, 'projects/projects.html', context)
 
