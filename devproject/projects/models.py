@@ -1,5 +1,6 @@
 from email.policy import default
 from operator import truediv
+from pickle import TRUE
 from turtle import title
 from django.db import models
 import uuid
@@ -29,11 +30,15 @@ class Review(models.Model):
         ('up', 'Up Vote'),
         ('down', 'Down Vote')
     )
+    owner = models.ForeignKey(Profile, on_delete=models.CASCADE, null=TRUE)
     project = models.ForeignKey(Project, on_delete = models.CASCADE)
     id = models.UUIDField(default = uuid.uuid4, primary_key = True, unique = True, editable = False)
     body = models.TextField(null = True, blank = True)
     created = models.DateField(auto_now_add = True)
     value = models.CharField(max_length = 200, choices = VOTE_TYPE)
+
+    class Meta:
+        unique_together = [['owner', 'project']]
 
     def __str__(self) -> str:
         return self.value
