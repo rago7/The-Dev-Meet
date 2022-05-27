@@ -1,7 +1,7 @@
 from dataclasses import field, fields
 from pyexpat import model
 from django.forms import ModelForm
-from .models import Project
+from .models import Project, Review
 from django.forms import ModelForm
 from django import forms
 
@@ -25,6 +25,21 @@ class CreateProject(ModelForm):
         # self.fields['featured_image'].widget.attrs.update({'class' : 'input'})
         # self.fields['demo_link'].widget.attrs.update({'class' : 'input', 'placeholder' : 'Paste Your Demo Link'})
         # self.fields['source_link'].widget.attrs.update({'class' : 'input', 'placeholder' : 'Paste Your Source Link'})
+
+        for name, field in self.fields.items():
+            field.widget.attrs.update({'class' : 'input', 'placeholder' : 'Add ' + name})
+
+class CreateReview(ModelForm):
+    class Meta:
+        model = Review
+        fields = ['value', 'body']
+        labels = {
+            'value' : 'Give your vote',
+            'body' : 'write your review'
+        }
+    def __init__(self, *args, **kwargs) -> None:
+        # this function overrides the initial load of ADD Project Page. 
+        super(CreateReview, self).__init__(*args, **kwargs)
 
         for name, field in self.fields.items():
             field.widget.attrs.update({'class' : 'input', 'placeholder' : 'Add ' + name})

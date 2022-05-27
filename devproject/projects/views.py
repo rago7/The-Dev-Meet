@@ -1,7 +1,8 @@
+from django.contrib import messages
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
-from projects.form_create import CreateProject
+from projects.form_create import CreateProject, CreateReview
 from django.contrib.auth.decorators import login_required
 
 from projects.models import Project
@@ -21,12 +22,22 @@ def projects(request):
 
 def project(request,pk):
     isFound = False
+    review_form = CreateReview()
     projectObj = Project.objects.get(id = pk)
     if(projectObj):
         isFound = True
         tags = projectObj.tags.all()
+    if request.method == 'POST':
+        form = CreateReview(request.POST)
+        review = form.save(commit=False)
+        review.owner = request.user.profile
+        review.project = projectObj
+        review.save()
+        projectObj.updateVotes
+        messages.success(request, 'Review Submitted !')
+        return redirect('project', pk=projectObj.id)
     
-    context = {'key' : pk, 'item' : projectObj, 'isFound': isFound, 'tags' : tags}
+    context = {'key' : pk, 'item' : projectObj, 'isFound': isFound, 'tags' : tags, 'review_form' : review_form}
     # return HttpResponse('single project' + ' ' + str(pk) )
     return render(request, 'projects/single-projects.html', context)
 

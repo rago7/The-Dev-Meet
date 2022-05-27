@@ -2,6 +2,7 @@ from email.policy import default
 from operator import truediv
 from pickle import TRUE
 from turtle import title
+from typing import OrderedDict
 from django.db import models
 import uuid
 
@@ -24,6 +25,23 @@ class Project(models.Model):
 
     def __str__(self) -> str:
         return self.title
+
+    class Meta:
+        ordering = ['-vote_ratio', '-vote_total', 'title']
+
+    def reviewers(self):
+        queryset = self.review_set.all().values_list('owner__id', flat=True)
+        return queryset
+
+    @property
+    def updateVotes(self):
+        reviews = self.review_set.all()
+        totalVotes = reviews.count()
+        upVotes = reviews.filter(value='up').count()
+        ratio = (upVotes/totalVotes) * 100
+        self.vote_total = totalVotes
+        self.vote_ratio = ratio
+        self.save()
 
 class Review(models.Model):
     VOTE_TYPE = (
