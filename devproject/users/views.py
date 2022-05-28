@@ -2,10 +2,10 @@ from pickle import FALSE
 from django.db.models import Q
 from django.contrib import messages
 from django.shortcuts import render, redirect
-from .models import Profile
+from .models import Message, Profile
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from .forms import CustomUserCreationForm, ProfileEditForm, SkillForm
+from .forms import CustomUserCreationForm, ProfileEditForm, SkillForm, MessageForm
 from django.contrib.auth.decorators import login_required
 
 from .utils import searchProfile
@@ -137,3 +137,38 @@ def deleteSkill(request, pk):
 
     context = {'object':skill, 'back':'account', 'type':'Skill'}
     return render(request, 'delete_template.html', context)
+
+@login_required(login_url='login')
+def inbox(request):
+    profile = request.user.profile
+    messageRequest = profile.messages.all()
+    unreadCount = messageRequest.filter(isRead=False).count()
+    context = {'messageRequest' : messageRequest, 'unreadCount' : unreadCount}
+    return render(request, 'users/inbox.html', context)
+
+@login_required(login_url='login')
+def viewMessage(request, pk):
+    profile = request.user.profile
+    msg = profile.messages.get(id=pk)
+    if msg.isRead == False:
+        msg.isRead = True
+        msg.save()
+    context = {'msg' : msg}
+    return render(request, 'users/message.html', context)
+
+def createMessage(request, pk):
+    sender = request.user.profile
+    recipient = Profile.objects.get(id=pk)
+    form = MessageForm()
+    if request.method == 'POST':
+        form = MessageForm(request.POST)
+        if form.is_valid():
+            sender = request.user.profile
+            recipient = Profile.objects.get(id=pk)
+            form = form.save(commit=False)
+            form.sender = sender
+            form.recipient = recipient
+            form.save()
+            return redirect('user-profile', pk=recipient.id)
+    context = {'form' : form, 'recipient':recipient}
+    return render(request, 'users/message_form.html', context)

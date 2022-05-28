@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import ModelForm
 
-from users.models import Profile, Skill
+from users.models import Message, Profile, Skill
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
@@ -72,6 +72,18 @@ class SkillForm(ModelForm):
         # self.fields['featured_image'].widget.attrs.update({'class' : 'input'})
         # self.fields['demo_link'].widget.attrs.update({'class' : 'input', 'placeholder' : 'Paste Your Demo Link'})
         # self.fields['source_link'].widget.attrs.update({'class' : 'input', 'placeholder' : 'Paste Your Source Link'})
+
+        for name, field in self.fields.items():
+            field.widget.attrs.update({'class' : 'input', 'placeholder' : 'Add ' + name})
+
+class MessageForm(ModelForm):
+    class Meta:
+        model = Message
+        fields = ['name', 'email', 'subject', 'body']
+
+    def __init__(self, *args, **kwargs) -> None:
+        # this function overrides the initial load of ADD Project Page. 
+        super(MessageForm, self).__init__(*args, **kwargs)
 
         for name, field in self.fields.items():
             field.widget.attrs.update({'class' : 'input', 'placeholder' : 'Add ' + name})

@@ -28,7 +28,9 @@
                 <a title="Personal Website" href="#" target="_blank"><i class="im im-globe"></i></a>
               </li>
             </ul>
+            {% if profile.id != request.user.profile.id %}
             <a href="#" class="btn btn--sub btn--lg">Send Message </a>
+            {% endif %}
           </div>
         </div>
       </div>
