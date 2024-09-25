@@ -1,2 +1,1 @@
-# django-basic-project
-Learning Project on Django!
+The Dev Meet, A Place For Developers
